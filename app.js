@@ -78,3 +78,60 @@ function renderBalances() {
   }).join('');
 }
 loadData();
+function calculateSettlements() {
+  const netBalances = {};
+  members.forEach(m => netBalances[m] = 0);
+  expenses.forEach(({ from, to, amount }) => {
+    if (from && to) {
+      netBalances[from] -= amount;
+      netBalances[to] += amount;
+    }
+  });
+
+  const creditors = [], debtors = [];
+
+  for (const [person, balance] of Object.entries(netBalances)) {
+    if (balance > 0) creditors.push({ person, amount: balance });
+    else if (balance < 0) debtors.push({ person, amount: -balance });
+  }
+
+  // Sort to optimize transactions
+  creditors.sort((a, b) => b.amount - a.amount);
+  debtors.sort((a, b) => b.amount - a.amount);
+
+  const settlements = [];
+
+  let i = 0, j = 0;
+  while (i < debtors.length && j < creditors.length) {
+    const debtor = debtors[i];
+    const creditor = creditors[j];
+    const amount = Math.min(debtor.amount, creditor.amount);
+
+    settlements.push({
+      from: debtor.person,
+      to: creditor.person,
+      amount: amount.toFixed(2)
+    });
+
+    debtor.amount -= amount;
+    creditor.amount -= amount;
+
+    if (debtor.amount === 0) i++;
+    if (creditor.amount === 0) j++;
+  }
+
+  renderSettlements(settlements);
+}
+
+function renderSettlements(settlements) {
+  const div = document.getElementById('settlementResults');
+  if (settlements.length === 0) {
+    div.innerHTML = "<p>All balances are settled 🎉</p>";
+    return;
+  }
+
+  div.innerHTML = settlements.map(s => 
+    `<p><b>${s.from}</b> should pay <b>${s.to}</b> ₹${s.amount}</p>`
+  ).join('');
+}
+
