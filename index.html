@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Splitwise Clone</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>💸 SplitBill</h1>
+
+    <div id="group">
+      <input type="text" id="memberName" placeholder="Add member" />
+      <button onclick="addMember()">Add</button>
+      <div id="membersList"></div>
+    </div>
+
+    <hr />
+
+    <div id="expense">
+      <input type="text" id="description" placeholder="Expense description" />
+      <input type="number" id="amount" placeholder="Amount" />
+      <select id="payer"></select>
+      <label>Select Shared Members:</label>
+      <div id="sharedMembers"></div>
+      <button onclick="addExpense()">Add Expense</button>
+    </div>
+
+    <hr />
+
+    <div id="balances"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
